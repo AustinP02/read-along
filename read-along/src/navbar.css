@@ -37,3 +37,17 @@ body {
 .logo {
     height: 80px;
 }
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0;
+}
+
+.logout-btn:hover {
+  text-decoration: underline;
+}

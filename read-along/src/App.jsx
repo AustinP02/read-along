@@ -1,27 +1,29 @@
-import { useState } from 'react'
-import NavBar from './NavBar'
-import About from './pages/About'
-import Profile from './pages/Profile'
-import Home from './pages/Home'
-import Signup from './pages/Signup'
-import {Route, Routes} from "react-router-dom"
+import { useLocation } from "react-router-dom";
+import NavBar from "./NavBar";
+import Home from "./pages/Home";
+import Signup from "./pages/Signup";
+import About from "./pages/About";
+import Profile from "./pages/Profile";
+import Lesson from "./pages/Lesson";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
-  
+  const location = useLocation();
+
+  const hideNavBar = false;
+
   return (
     <>
-      <NavBar />
-      <div className="container">
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/about' element={<About />} />
-          <Route path='/profile' element={<Profile />} />
-          <Route path='/signup' element={<Signup />} />
-        </Routes>
-      </div>
+      {!hideNavBar && <NavBar />}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/lesson" element={<Lesson />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

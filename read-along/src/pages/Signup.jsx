@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from './Signup.module.css';
 
+
 function Signup() {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState('login');
   const [username, setUsername] = useState('');
   const [signupError, setSignupError] = useState('');
@@ -39,7 +43,7 @@ function Signup() {
       alert(`Logged in successfully!`);
       setLoginEmail('');
       setLoginPassword('');
-      // Redirect to profile or home page
+      navigate("/");
     } catch (error) {
       setSignupError(error.message);
     } finally {
@@ -168,7 +172,18 @@ function Signup() {
 
   return (
     <div className={styles.signupPage}>
-      {/* ... rest of your JSX remains the same ... */}
+      
+      <img src="https://flagcdn.com/w40/us.png" alt="USA" className={`${styles.flag} ${styles.flag1}`} />
+      <img src="https://flagcdn.com/w40/in.png" alt="India" className={`${styles.flag} ${styles.flag2}`} />
+      <img src="https://flagcdn.com/w40/fr.png" alt="France" className={`${styles.flag} ${styles.flag3}`} />
+      <img src="https://flagcdn.com/w40/jp.png" alt="Japan" className={`${styles.flag} ${styles.flag4}`} />
+      <img src="https://flagcdn.com/w40/br.png" alt="Brazil" className={`${styles.flag} ${styles.flag5}`} />
+      <img src="https://flagcdn.com/w40/gb.png" alt="UK" className={`${styles.flag} ${styles.flag6}`} />
+     
+      <header className={styles.signupHeader}>
+        <h1>ReadAlong</h1>
+        <p>Helping kids and non-native speakers learn through reading!</p>
+      </header>
       
       {/* Just update button text to show loading state */}
       {currentPage === 'login' && (
@@ -210,6 +225,91 @@ function Signup() {
       )}
       
       {/* Similar updates for signup and welcome sections */}
+            {/* Signup Section */}
+      {currentPage === 'signup' && (
+        <div className={styles.container}>
+          <h2>Sign Up</h2>
+          <div>
+            {signupError && (
+              <div className={styles.errorMsg}>{signupError}</div>
+            )}
+
+            <label>Username</label>
+            <input
+              type="text"
+              value={signupUsername}
+              onChange={(e) => setSignupUsername(e.target.value)}
+              placeholder="Enter your username"
+            />
+
+            <label>Email</label>
+            <div className={styles.emailWidget}>
+              <input
+                type="email"
+                value={signupEmail}
+                onChange={handleEmailChange}
+                placeholder="Enter your email"
+              />
+              <span className={styles.emailIcon}>📧</span>
+            </div>
+            {emailError && (
+              <div className={`${styles.errorMsg} ${styles.emailError}`}>{emailError}</div>
+            )}
+
+            <label>Password</label>
+            <input
+              type="password"
+              value={signupPassword}
+              onChange={(e) => setSignupPassword(e.target.value)}
+              placeholder="Enter your password"
+            />
+
+            <label>Confirm Password</label>
+            <input
+              type="password"
+              value={signupConfirmPassword}
+              onChange={(e) => setSignupConfirmPassword(e.target.value)}
+              placeholder="Re-enter your password"
+            />
+
+            <button onClick={handleSignup}>Create Account</button>
+          </div>
+          <div className={styles.linkText}>
+            <p>
+              Already have an account?{' '}
+              <span onClick={() => setCurrentPage('login')}>
+                Login here
+              </span>
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Welcome Section */}
+      {currentPage === 'welcome' && (
+        <div className={styles.container}>
+          <h2>Welcome, {username}!</h2>
+          <div>
+            <label>Which country are you from?</label>
+            <input
+              type="text"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              placeholder="Enter your country"
+            />
+
+            <label>Your Age</label>
+            <input
+              type="number"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              placeholder="Enter your age"
+            />
+
+            <button onClick={handleWelcome}>Submit</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
