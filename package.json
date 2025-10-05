@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.15"
+  },
+  "devDependencies": {
+    "vite": "^7.1.9"
+  }
+}
