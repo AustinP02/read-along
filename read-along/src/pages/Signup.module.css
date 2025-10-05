@@ -150,15 +150,19 @@
   color: #666;
 }
 
-.linkText span {
+.linkTextP span {
   color: #5b1db6;
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
 }
 
-.linkText span:hover {
+.linkTextP span:hover {
   color: #8f6be6;
+}
+
+.linkTextP {
+  color: black;
 }
 
 /* Decorative Flags */

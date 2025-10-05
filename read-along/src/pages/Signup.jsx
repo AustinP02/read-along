@@ -213,8 +213,8 @@ function Signup() {
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </div>
-          <div className={styles.linkText}>
-            <p>
+          <div className={styles.linkTextText}>
+            <p className={styles.linkTextP}>
               Don't have an account?{' '}
               <span onClick={() => setCurrentPage('signup')}>
                 Set up an account
@@ -275,7 +275,7 @@ function Signup() {
             <button onClick={handleSignup}>Create Account</button>
           </div>
           <div className={styles.linkText}>
-            <p>
+            <p className={styles.linkTextP}>
               Already have an account?{' '}
               <span onClick={() => setCurrentPage('login')}>
                 Login here
