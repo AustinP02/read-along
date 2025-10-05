@@ -1,7 +1,8 @@
+import Recorder from "../components/Recorder"
 
 
 function Home() {
-    return(<h1>Home</h1>)
+    return(<Recorder></Recorder>)
 }
 
 export default Home
