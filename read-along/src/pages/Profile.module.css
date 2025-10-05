@@ -1,0 +1,259 @@
+/* ===================================================
+   Profile-specific Variables (scoped)
+   =================================================== */
+.profileWrapper {
+  /* Local CSS variables for this component only */
+  --bg-top: #4b1f6e;
+  --bg-mid: #5b1db6;
+  --bg-btm: #8f6be6;
+}
+
+/* ===================================================
+   Profile Page Wrapper (replaces global body styles)
+   =================================================== */
+.profileWrapper {
+  min-height: calc(100vh - 60px); /* Adjust based on your navbar height */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1rem;
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 55%, var(--bg-btm) 100%);
+  color: #fff;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  margin: 0 -2rem -2rem -2rem; /* Negative margins to expand beyond container */
+  padding: 2rem;
+}
+
+.main {
+  flex: 1;
+  color: #fff;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.welcomeHeading {
+  margin-top: 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+.statsSection {
+  margin-top: 1.25rem;
+}
+
+.statsBox {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 0.35rem 1rem 1rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.statsHeading {
+  margin-bottom: 0.35rem;
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.statsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* Progress / bars */
+.progressContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progressRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: clamp(0.75rem, 2vw, 0.85rem);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.progressLabel {
+  font-weight: 700;
+}
+
+.progressPercent {
+  opacity: 0.95;
+}
+
+.progressBar {
+  height: 8px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #6ef0ff, #a67bff);
+  border-radius: 6px;
+  width: var(--progress, 0%);
+}
+
+/* Accuracy */
+.accuracyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.accuracyLabel {
+  font-size: clamp(0.75rem, 2vw, 0.85rem);
+  opacity: 0.85;
+  font-weight: 700;
+}
+
+.accuracyValue {
+  font-size: clamp(1.3rem, 4vw, 1.6rem);
+  font-weight: 800;
+}
+
+/* Streak */
+.streakLabel {
+  font-size: clamp(0.75rem, 2vw, 0.85rem);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.streakDots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.streakDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.streakDot[data-active="true"] {
+  background: linear-gradient(180deg, #ffd86f, #ffb347);
+}
+
+.streakCount {
+  font-size: clamp(0.75rem, 2vw, 0.85rem);
+  margin-left: 8px;
+}
+
+/* History */
+.historyBox {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  margin-top: 1rem;
+}
+
+.historySection {
+  margin-top: 1rem;
+}
+
+.historyHeading {
+  margin: 0 0 0.5rem 0;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.historyItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.historyTitle {
+  font-weight: 700;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+}
+
+.historyMeta {
+  font-size: clamp(0.75rem, 2vw, 0.85rem);
+  opacity: 0.85;
+}
+
+.historyAccuracy {
+  font-weight: 700;
+  margin-left: 0.6rem;
+  font-size: clamp(0.75rem, 2vw, 0.85rem);
+  opacity: 0.95;
+}
+
+/* ===================================================
+   Responsive Media Queries
+   =================================================== */
+
+/* Tablet and above */
+@media (min-width: 640px) {
+  .profileWrapper {
+    padding: 2rem;
+  }
+  
+  .statsGrid {
+    grid-template-columns: 220px 1fr;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1280px) {
+  .main {
+    max-width: 1400px;
+  }
+}
+
+/* Small mobile adjustments */
+@media (max-width: 400px) {
+  .profileWrapper {
+    padding: 0.75rem;
+  }
+  
+  .statsBox,
+  .historyBox {
+    padding: 0.75rem;
+  }
+  
+  .streakDots {
+    gap: 6px;
+  }
+  
+  .streakDot {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* End of file */

@@ -1,0 +1,245 @@
+/* ===================================================
+   Signup-specific Variables (scoped to this component)
+   =================================================== */
+.signupPage {
+  /* Local CSS variables for this component only */
+  --bg-top: #4b1f6e;
+  --bg-mid: #5b1db6;
+  --bg-btm: #8f6be6;
+}
+
+/* ===================================================
+   Signup Page Wrapper
+   =================================================== */
+.signupPage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 55%, var(--bg-btm) 100%);
+  color: #fff;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header */
+.signupHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.signupHeader h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0 0 0.5rem 0;
+  font-weight: 800;
+}
+
+.signupHeader p {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* Container/Form Box */
+.container {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  color: #333;
+}
+
+.container h2 {
+  margin: 0 0 1.5rem 0;
+  color: #4b1f6e;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  text-align: center;
+}
+
+.container label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.container input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.container input:focus {
+  outline: none;
+  border-color: #8f6be6;
+}
+
+.container button {
+  width: 100%;
+  padding: 0.875rem;
+  margin-top: 1.5rem;
+  background: linear-gradient(135deg, #5b1db6, #8f6be6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.container button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(91, 29, 182, 0.4);
+}
+
+.container button:active {
+  transform: translateY(0);
+}
+
+/* Email Widget */
+.emailWidget {
+  position: relative;
+}
+
+.emailWidget input {
+  padding-right: 2.5rem;
+}
+
+.emailIcon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  pointer-events: none;
+}
+
+/* Error Messages */
+.errorMsg {
+  background: #fee;
+  color: #c33;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  border: 1px solid #fcc;
+}
+
+.emailError {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* Link Text */
+.linkText {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.linkText span {
+  color: #5b1db6;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.linkText span:hover {
+  color: #8f6be6;
+}
+
+/* Decorative Flags */
+.flag {
+  position: absolute;
+  width: 40px;
+  height: auto;
+  opacity: 0.6;
+  animation: float 6s ease-in-out infinite;
+}
+
+.flag1 {
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.flag2 {
+  top: 20%;
+  right: 15%;
+  animation-delay: 1s;
+}
+
+.flag3 {
+  bottom: 15%;
+  left: 12%;
+  animation-delay: 2s;
+}
+
+.flag4 {
+  top: 60%;
+  right: 8%;
+  animation-delay: 0.5s;
+}
+
+.flag5 {
+  bottom: 25%;
+  right: 20%;
+  animation-delay: 1.5s;
+}
+
+.flag6 {
+  top: 40%;
+  left: 5%;
+  animation-delay: 2.5s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+/* ===================================================
+   Responsive Media Queries
+   =================================================== */
+
+/* Small mobile adjustments */
+@media (max-width: 480px) {
+  .signupPage {
+    padding: 1rem 0.5rem;
+  }
+  
+  .container {
+    padding: 1.5rem;
+  }
+  
+  .flag {
+    width: 30px;
+    opacity: 0.4;
+  }
+}
+
+/* Tablet and above */
+@media (min-width: 640px) {
+  .signupPage {
+    padding: 3rem 2rem;
+  }
+}
+
+/* End of file */

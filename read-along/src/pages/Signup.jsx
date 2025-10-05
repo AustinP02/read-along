@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import './signup.css';
+import styles from './Signup.module.css';
 
 function Signup() {
   const [currentPage, setCurrentPage] = useState('login');
@@ -78,24 +77,24 @@ function Signup() {
   };
 
   return (
-    <div className="signup-page">
+    <div className={styles.signupPage}>
       {/* Decorative flags */}
-      <img src="https://flagcdn.com/w40/us.png" alt="USA" className="flag flag1" />
-      <img src="https://flagcdn.com/w40/in.png" alt="India" className="flag flag2" />
-      <img src="https://flagcdn.com/w40/fr.png" alt="France" className="flag flag3" />
-      <img src="https://flagcdn.com/w40/jp.png" alt="Japan" className="flag flag4" />
-      <img src="https://flagcdn.com/w40/br.png" alt="Brazil" className="flag flag5" />
-      <img src="https://flagcdn.com/w40/gb.png" alt="UK" className="flag flag6" />
+      <img src="https://flagcdn.com/w40/us.png" alt="USA" className={`${styles.flag} ${styles.flag1}`} />
+      <img src="https://flagcdn.com/w40/in.png" alt="India" className={`${styles.flag} ${styles.flag2}`} />
+      <img src="https://flagcdn.com/w40/fr.png" alt="France" className={`${styles.flag} ${styles.flag3}`} />
+      <img src="https://flagcdn.com/w40/jp.png" alt="Japan" className={`${styles.flag} ${styles.flag4}`} />
+      <img src="https://flagcdn.com/w40/br.png" alt="Brazil" className={`${styles.flag} ${styles.flag5}`} />
+      <img src="https://flagcdn.com/w40/gb.png" alt="UK" className={`${styles.flag} ${styles.flag6}`} />
 
       {/* Header */}
-      <header className="signup-header">
+      <header className={styles.signupHeader}>
         <h1>ReadAlong</h1>
         <p>Helping kids and non-native speakers learn through reading!</p>
       </header>
 
       {/* Login Section */}
       {currentPage === 'login' && (
-        <div className="container">
+        <div className={styles.container}>
           <h2>Login</h2>
           <div>
             <label>Username</label>
@@ -116,7 +115,7 @@ function Signup() {
 
             <button onClick={handleLogin}>Login</button>
           </div>
-          <div className="link-text">
+          <div className={styles.linkText}>
             <p>
               Don't have an account?{' '}
               <span onClick={() => setCurrentPage('signup')}>
@@ -129,11 +128,11 @@ function Signup() {
 
       {/* Signup Section */}
       {currentPage === 'signup' && (
-        <div className="container">
+        <div className={styles.container}>
           <h2>Sign Up</h2>
           <div>
             {signupError && (
-              <div className="error-msg">{signupError}</div>
+              <div className={styles.errorMsg}>{signupError}</div>
             )}
 
             <label>Username</label>
@@ -145,17 +144,17 @@ function Signup() {
             />
 
             <label>Email</label>
-            <div className="email-widget">
+            <div className={styles.emailWidget}>
               <input
                 type="email"
                 value={signupEmail}
                 onChange={handleEmailChange}
                 placeholder="Enter your email"
               />
-              <span className="email-icon">📧</span>
+              <span className={styles.emailIcon}>📧</span>
             </div>
             {emailError && (
-              <div className="error-msg email-error">{emailError}</div>
+              <div className={`${styles.errorMsg} ${styles.emailError}`}>{emailError}</div>
             )}
 
             <label>Password</label>
@@ -176,7 +175,7 @@ function Signup() {
 
             <button onClick={handleSignup}>Create Account</button>
           </div>
-          <div className="link-text">
+          <div className={styles.linkText}>
             <p>
               Already have an account?{' '}
               <span onClick={() => setCurrentPage('login')}>
@@ -189,7 +188,7 @@ function Signup() {
 
       {/* Welcome Section */}
       {currentPage === 'welcome' && (
-        <div className="container">
+        <div className={styles.container}>
           <h2>Welcome, {username}!</h2>
           <div>
             <label>Which country are you from?</label>
