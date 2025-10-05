@@ -27,6 +27,69 @@ function Signup() {
   const [country, setCountry] = useState('');
   const [age, setAge] = useState('');
 
+  const updateStreak = async (userId) => {
+    try {
+      // Get current user stats
+      const { data: stats, error: fetchError } = await supabase
+        .from('user_stats')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (fetchError) {
+        console.error('Error fetching stats:', fetchError);
+        throw fetchError;
+      }
+
+      const today = new Date().toISOString().split('T')[0]; // Get YYYY-MM-DD
+      const lastLogin = stats.last_login_date;
+
+      let newStreak = stats.current_streak || 0;
+
+      if (!lastLogin) {
+        // First login ever
+        newStreak = 1;
+      } else {
+        const lastLoginDate = new Date(lastLogin);
+        const todayDate = new Date(today);
+        const diffTime = todayDate - lastLoginDate;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 0) {
+          // Already logged in today, no change
+          console.log('Already logged in today, streak unchanged');
+          return;
+        } else if (diffDays === 1) {
+          // Consecutive day login
+          newStreak = newStreak + 1;
+        } else {
+          // Streak broken, reset to 1
+          newStreak = 1;
+        }
+      }
+
+      // Update the streak and last login date
+      const { data: updateData, error: updateError } = await supabase
+        .from('user_stats')
+        .update({
+          current_streak: newStreak,
+          last_login_date: today,
+        })
+        .eq('user_id', userId)
+        .select();
+
+      if (updateError) {
+        console.error('Error updating streak:', updateError);
+        throw updateError;
+      }
+
+      console.log(`Streak updated successfully: ${newStreak} days`);
+    } catch (error) {
+      console.error('Error updating streak:', error);
+      // Don't throw - allow login to continue even if streak update fails
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -39,6 +102,9 @@ function Signup() {
       });
 
       if (error) throw error;
+
+      // Update streak after successful login
+      await updateStreak(data.user.id);
 
       alert(`Logged in successfully!`);
       setLoginEmail('');
@@ -103,7 +169,9 @@ function Signup() {
 
       if (profileError) throw profileError;
 
-      // Initialize user stats
+      const today = new Date().toISOString().split('T')[0];
+
+      // Initialize user stats with first login date
       const { error: statsError } = await supabase
         .from('user_stats')
         .insert([
@@ -112,7 +180,8 @@ function Signup() {
             accuracy: 0,
             lessons_completed: 0,
             lessons_target: 30,
-            current_streak: 0,
+            current_streak: 1,
+            last_login_date: today,
           }
         ]);
 
@@ -162,7 +231,7 @@ function Signup() {
       if (error) throw error;
 
       alert(`Welcome ${username}! Your profile has been updated.`);
-      // Redirect to home or profile page
+      navigate("/");
     } catch (error) {
       setSignupError(error.message);
     } finally {
@@ -272,7 +341,9 @@ function Signup() {
               placeholder="Re-enter your password"
             />
 
-            <button onClick={handleSignup}>Create Account</button>
+            <button onClick={handleSignup} disabled={loading}>
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </button>
           </div>
           <div className={styles.linkText}>
             <p className={styles.linkTextP}>
@@ -306,7 +377,9 @@ function Signup() {
               placeholder="Enter your age"
             />
 
-            <button onClick={handleWelcome}>Submit</button>
+            <button onClick={handleWelcome} disabled={loading}>
+              {loading ? 'Submitting...' : 'Submit'}
+            </button>
           </div>
         </div>
       )}

@@ -17,6 +17,7 @@ function Lesson() {
   const mediaRecorder = useRef(null);
   const chunks = useRef([]);
   const timerRef = useRef(null);
+  const hasGeneratedLesson = useRef(false);
 
   const [elevenLoading, setElevenLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
@@ -34,19 +35,23 @@ function Lesson() {
   });
 
   useEffect(() => {
-    fetchCurrentUser();
-    main();
-  }, []);
+    const init = async () => {
+      if (hasGeneratedLesson.current) return;
+      hasGeneratedLesson.current = true;
+      
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) throw error;
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+      
+      await main();
+    };
 
-  const fetchCurrentUser = async () => {
-    try {
-      const { data: { user }, error } = await supabase.auth.getUser();
-      if (error) throw error;
-      setCurrentUser(user);
-    } catch (error) {
-      console.error('Error fetching user:', error);
-    }
-  };
+    init();
+  }, []);
 
   async function main() {
     setGtext("");
@@ -179,7 +184,26 @@ function Lesson() {
     }
   };
 
-  const generateTTS = async () => {
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Generate and play or stop TTS
+  const toggleTTS = async () => {
+    // Stop current playback
+    if (isPlaying && audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsPlaying(false);
+      return;
+    }
+
+    // If already have audio cached, just play it
+    if (audioUrl) {
+      playAudio(audioUrl);
+      return;
+    }
+
+    // Otherwise generate TTS first
     try {
       setElevenLoading(true);
 
@@ -205,6 +229,7 @@ function Lesson() {
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       setAudioUrl(url);
+      playAudio(url);
     } catch (error) {
       console.error("Error generating TTS:", error);
     } finally {
@@ -212,13 +237,22 @@ function Lesson() {
     }
   };
 
-  const playSaved = () => {
-    if (audioUrl) {
-      const audio = new Audio(audioUrl);
-      audio.play();
-    } else {
-      alert("No saved audio yet! Click 'Generate Speech' first.");
+  const playAudio = (url) => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
     }
+
+    const audio = new Audio(url);
+    audioRef.current = audio;
+
+    audio.play()
+      .then(() => setIsPlaying(true))
+      .catch((err) => console.error("Audio playback error:", err));
+
+    audio.onended = () => {
+      setIsPlaying(false);
+    };
   };
 
   function blobToBase64(blob) {
@@ -243,7 +277,11 @@ function Lesson() {
               {
                 text: `You are a transcription assistant. 
                 The following audio is a recording of human speech. 
-                Please listen carefully and provide a full, accurate transcript of the spoken words:`,
+                Please listen carefully and provide a full, accurate transcript of the spoken words.
+                IMPORTANT: Transcribe EXACTLY what you hear, word-for-word, in the exact order spoken.
+                Do not add punctuation unless you hear clear pauses.
+                Do not correct grammar or rearrange words.
+                Output only the raw transcript with no additional commentary.`,
               },
               {
                 inlineData: {
@@ -433,6 +471,7 @@ function Lesson() {
     const cleanWord = word.replace(/[.,!?]/g, "");
 
     const handleMouseEnter = async () => {
+      // Show tooltip for both mispronounced and skipped words
       if (isIncorrect || isMissing) {
         setShowTooltip(true);
         
@@ -454,6 +493,7 @@ function Lesson() {
     let color = "black";
     let backgroundColor = "transparent";
 
+    // Red for mispronounced, yellow for skipped
     if (isMissing) {
       backgroundColor = "#ffff99";
     } else if (isIncorrect) {
@@ -549,8 +589,8 @@ function Lesson() {
       const spokenWord = spokenWords[index];
       const cleanSpoken = spokenWord ? spokenWord.replace(/[.,!?]/g, "").toLowerCase() : null;
 
-      const isMissing = !spokenWord;
-      const isIncorrect = spokenWord && cleanRef !== cleanSpoken;
+      const isMissing = !spokenWord; // Word was skipped
+      const isIncorrect = spokenWord && cleanRef !== cleanSpoken; // Word was mispronounced
 
       return (
         <WordWithTooltip
@@ -565,117 +605,120 @@ function Lesson() {
   }
 
   return (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      minHeight: "100vh",
-      textAlign: "center",
-      padding: "20px",
-      fontFamily: "sans-serif",
-      background: "linear-gradient(to bottom, #4b1f6e, #5b1db6, #8f6be6)",
-    }}
-  >
-    {gtext && (
-      <div
-        style={{
-          margin: "20px auto",
-          padding: "15px 20px",
-          fontSize: "1.2rem",
-          whiteSpace: "pre-wrap",
-          backgroundColor: "#f0ffd1",
-          border: "1px solid black",
-          borderRadius: "20px",
-          maxWidth: "600px",
-          width: "90%",
-        }}
-      >
-        {transcript ? getHighlightedText(gtext, transcript) : gtext}
-      </div>
-    )}
-
-    {loading && <p style={{ fontSize: "1.2rem" }}>Generating{dots}</p>}
-
-    <h2 style={{ marginTop: "30px", color: "white" }}>⏱️ {seconds}s</h2>
-
-    <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-      {!isRecording ? (
-        <button
-          onClick={startRecording}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        textAlign: "center",
+        padding: "20px",
+        fontFamily: "sans-serif",
+        background: "linear-gradient(to bottom, #4b1f6e, #5b1db6, #8f6be6)",
+      }}
+    >
+      {gtext && (
+        <div
           style={{
-            padding: "10px 20px",
-            fontSize: "16px",
-            cursor: "pointer",
-            borderRadius: "8px",
-            backgroundColor: "#cceeff",
-            border: "1px solid #333",
+            margin: "20px auto",
+            padding: "15px 20px",
+            fontSize: "1.2rem",
+            whiteSpace: "pre-wrap",
+            backgroundColor: "#f0ffd1",
+            border: "1px solid black",
+            borderRadius: "20px",
+            maxWidth: "600px",
+            width: "90%",
           }}
         >
-          RECORD
-        </button>
-      ) : (
-        <button
-          onClick={stopRecording}
-          style={{
-            padding: "10px 20px",
-            fontSize: "16px",
-            cursor: "pointer",
-            borderRadius: "8px",
-            backgroundColor: "#ffcccc",
-            border: "1px solid #333",
-          }}
-        >
-          STOP
-        </button>
+          {transcript ? getHighlightedText(gtext, transcript) : gtext}
+        </div>
       )}
 
-      <button
-        onClick={generateTTS}
-        disabled={elevenLoading || !gtext}
-        style={{
-          padding: "10px 20px",
-          fontSize: "16px",
-          cursor: elevenLoading ? "not-allowed" : "pointer",
-          borderRadius: "8px",
-          backgroundColor: elevenLoading ? "#ddd" : "#e6f7ff",
-          border: "1px solid #333",
-        }}
-      >
-        {elevenLoading ? "Generating..." : "Hear Sentence"}
-      </button>
+      {loading && <p style={{ fontSize: "1.2rem", color: "white" }}>Generating{dots}</p>}
+
+      <h2 style={{ marginTop: "30px", color: "white" }}>⏱️ {seconds}s</h2>
+
+      <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+        {!isRecording ? (
+          <button
+            onClick={startRecording}
+            style={{
+              padding: "10px 20px",
+              fontSize: "16px",
+              cursor: "pointer",
+              borderRadius: "8px",
+              backgroundColor: "#cceeff",
+              border: "1px solid #333",
+            }}
+          >
+            RECORD
+          </button>
+        ) : (
+          <button
+            onClick={stopRecording}
+            style={{
+              padding: "10px 20px",
+              fontSize: "16px",
+              cursor: "pointer",
+              borderRadius: "8px",
+              backgroundColor: "#ffcccc",
+              border: "1px solid #333",
+            }}
+          >
+            STOP
+          </button>
+        )}
+
+        <button
+          onClick={toggleTTS}
+          disabled={elevenLoading || !gtext}
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            cursor: elevenLoading ? "not-allowed" : "pointer",
+            borderRadius: "8px",
+            backgroundColor: elevenLoading ? "#ddd" : "#e6f7ff",
+            border: "1px solid #333",
+          }}
+        >
+          {elevenLoading
+            ? "Generating..."
+            : isPlaying
+            ? "Stop"
+            : "Hear Sentence"}
+        </button>
+      </div>
+
+      {recordedURL && (
+        <div style={{ marginTop: "20px" }}>
+          <audio controls src={recordedURL}></audio>
+        </div>
+      )}
+
+      {isTranscribing && (
+        <p style={{ marginTop: "20px", fontStyle: "italic", color: "white" }}>Transcribing...</p>
+      )}
+
+      {transcript && (
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "15px",
+            backgroundColor: "#f0f0f0",
+            borderRadius: "8px",
+            maxWidth: "600px",
+            textAlign: "left",
+            color: "#333",
+          }}
+        >
+          <h3>Transcript:</h3>
+          <p style={{ color: "black" }}>{transcript}</p>
+        </div>
+      )}
     </div>
-
-    {recordedURL && (
-      <div style={{ marginTop: "20px" }}>
-        <audio controls src={recordedURL}></audio>
-      </div>
-    )}
-
-    {isTranscribing && (
-      <p style={{ marginTop: "20px", fontStyle: "italic" }}>Transcribing...</p>
-    )}
-
-    {transcript && (
-      <div
-        style={{
-          marginTop: "20px",
-          padding: "15px",
-          backgroundColor: "#f0f0f0",
-          borderRadius: "8px",
-          maxWidth: "600px",
-          textAlign: "left",
-          color: "#333",
-        }}
-      >
-        <h3>Transcript:</h3>
-        <p style={{ color: "black" }}>{transcript}</p>
-      </div>
-    )}
-  </div>
-);
-
+  );
 }
 
 export default Lesson;
